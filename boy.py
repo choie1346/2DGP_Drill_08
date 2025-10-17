@@ -73,6 +73,11 @@ class AutoRun:
         pass
 
     def do(self):
+        if self.boy.x <= 10:
+            self.boy.dir = self.boy.face_dir = 1
+        elif self.boy.x >= 790:
+            self.boy.dir = self.boy.face_dir = -1
+
         self.boy.x += self.boy.dir * 5
         self.boy.frame = (self.boy.frame + 1) % 8
 
@@ -87,7 +92,7 @@ class Boy:
         self.x, self.y = 400, 90
         self.frame = 0
         self.face_dir = 1
-        self.dir = 0
+        self.dir = 1
         self.image = load_image('animation_sheet.png')
 
         self.IDLE = Idle(self)
@@ -97,7 +102,8 @@ class Boy:
             self.AUTORUN, # initial state
             {
                 self.IDLE: {right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
-                self.RUN: {right_down: self.IDLE, left_down: self.IDLE, right_up: self.IDLE, left_up: self.IDLE}
+                self.RUN: {right_down: self.IDLE, left_down: self.IDLE, right_up: self.IDLE, left_up: self.IDLE},
+                self.AUTORUN: {}
             }
         )
 
