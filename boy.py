@@ -67,7 +67,8 @@ class AutoRun:
         self.boy = boy
 
     def enter(self, e):
-        pass
+        if self.boy.dir == 0:
+            self.boy.dir = self.boy.face_dir
 
     def exit(self, e):
         pass
@@ -92,17 +93,17 @@ class Boy:
         self.x, self.y = 400, 90
         self.frame = 0
         self.face_dir = 1
-        self.dir = 1
+        self.dir = 0
         self.image = load_image('animation_sheet.png')
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
         self.AUTORUN = AutoRun(self)
         self.state_machine = StateMachine(
-            self.AUTORUN, # initial state
+            self.IDLE, # initial state
             {
-                self.IDLE: {right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
-                self.RUN: {right_down: self.IDLE, left_down: self.IDLE, right_up: self.IDLE, left_up: self.IDLE},
+                self.IDLE: {key_a: self.AUTORUN, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
+                self.RUN: {key_a: self.AUTORUN,right_down: self.IDLE, left_down: self.IDLE, right_up: self.IDLE, left_up: self.IDLE},
                 self.AUTORUN: {}
             }
         )
