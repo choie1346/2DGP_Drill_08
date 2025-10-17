@@ -6,7 +6,8 @@ from state_machine import StateMachine
 
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
-
+def time_out(e):
+    return e[0] == 'TIME_OUT'
 def key_a(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
 
@@ -70,10 +71,15 @@ class AutoRun:
         if self.boy.dir == 0:
             self.boy.dir = self.boy.face_dir
 
+        self.boy.autorun_start_time = get_time()
+
     def exit(self, e):
         pass
 
     def do(self):
+        if get_time() - self.boy.autorun_start_time > 5.0:
+            self.boy.state_machine.handle_state_event(('TIME_OUT', None))
+
         if self.boy.x <= 10:
             self.boy.dir = self.boy.face_dir = 1
         elif self.boy.x >= 790:
@@ -104,7 +110,7 @@ class Boy:
             {
                 self.IDLE: {key_a: self.AUTORUN, right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN},
                 self.RUN: {key_a: self.AUTORUN,right_down: self.IDLE, left_down: self.IDLE, right_up: self.IDLE, left_up: self.IDLE},
-                self.AUTORUN: {}
+                self.AUTORUN: {time_out: self.IDLE}
             }
         )
 
